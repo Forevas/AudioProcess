@@ -6,7 +6,6 @@ import android.media.AudioRecord;
 import android.media.AudioTrack;
 import android.media.MediaRecorder;
 import android.os.Environment;
-import android.util.Log;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -31,17 +30,16 @@ public class AudioEngine {
     private AudioRecord mRecorder;   //录音器
     private File file;
     private boolean isRecording;
+    private boolean isPlaying;
 
-    public AudioEngine() {
+    //开始录音
+    public void startRecord() {
         bufferSize = AudioRecord.getMinBufferSize(sampleRate, channelConfig, audioFormat);//设置bufferSize为AudioRecord所需最小bufferSize的两倍 15360
         mRecorder = new AudioRecord(MediaRecorder.AudioSource.MIC, sampleRate, channelConfig,
                 audioFormat, bufferSize);//初始化录音器
         mRecorder.startRecording();
-    }
-    //开始录音
-    public void StartRecord() {
         //生成PCM文件
-        file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/reverseme.pcm");
+        file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/demo.pcm");
         //如果存在，就先删除再创建
         if (file.exists())
             file.delete();
@@ -56,43 +54,39 @@ public class AudioEngine {
             BufferedOutputStream bos = new BufferedOutputStream(os);
             DataOutputStream dos = new DataOutputStream(bos);
 
-            int bufferSize = AudioRecord.getMinBufferSize(sampleRate, channelConfig, audioFormat)*2 ;//设置bufferSize为AudioRecord所需最小bufferSize的两倍
-//        buffer=new byte[bufferSize];
-            AudioRecord audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, sampleRate, channelConfig,
-                    audioFormat, bufferSize);//初始化录音器
+            int bufferSize = AudioRecord.getMinBufferSize(sampleRate, channelConfig, audioFormat) * 2;//设置bufferSize为AudioRecord所需最小bufferSize的两倍
             short[] buffer = new short[bufferSize];
-            byte[] buffer1=new byte[bufferSize];
-            audioRecord.startRecording();
             isRecording = true;
             while (isRecording) {
-                int bufferReadResult=audioRecord.read(buffer1,0,bufferSize);
-//                int bufferReadResult = audioRecord.read(buffer, 0, bufferSize);
+                int bufferReadResult = mRecorder.read(buffer, 0, bufferSize);
                 for (int i = 0; i < bufferReadResult; i++) {
-//                    dos.writeShort(buffer[i]);
-                    dos.writeByte(buffer1[i]);
+                    dos.writeShort(buffer[i]);
                 }
             }
-            audioRecord.stop();
+            mRecorder.stop();
             dos.close();
         } catch (Throwable t) {
         }
     }
 
+    public void stopRecord() {
+        isRecording = false;
+    }
+
     //播放文件
-    public void PlayRecord() {
-        if(file == null){
-            file=new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/reverseme.pcm");
+    public void playRecord() {
+        isPlaying = true;
+        if (file == null) {
+            file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/demo.pcm");
         }
         //读取文件
         int musicLength = (int) (file.length() / 2);
-        int musicLength1= (int) file.length();
         short[] music = new short[musicLength];
-        byte[] music1=new byte[musicLength1];
         try {
             AudioTrack audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC,
                     sampleRate, channelConfig,
                     AudioFormat.ENCODING_PCM_16BIT,
-                    musicLength1 ,
+                    (int) file.length(),
                     AudioTrack.MODE_STREAM);
             audioTrack.play();
             InputStream is = new FileInputStream(file);
@@ -100,26 +94,20 @@ public class AudioEngine {
             DataInputStream dis = new DataInputStream(bis);
             int i = 0;
             while (dis.available() > 0) {
-//                music[i] = dis.readShort();
-                music1[i]=dis.readByte();
+                music[i] = dis.readShort();
                 i++;
             }
-            int div=20;//分割为20段
-            short[] temp=new short[musicLength/div];
-            byte[]temp1=new byte[musicLength1/div];
-            for(int j=0;j<div;j++){
-//                System.arraycopy(music,j*(musicLength/div),temp,0,temp.length);
-                System.arraycopy(music1,j*(musicLength1/div),temp1,0,temp1.length);
-                audioTrack.write(temp1,0,temp1.length);
-            }
-//            audioTrack.write(music, 0, musicLength);
-//            audioTrack.write(music, 0, musicLength);
-//            audioTrack.write(music, 0, musicLength);
+            audioTrack.write(music, 0, musicLength);
             audioTrack.stop();
             dis.close();
-        } catch (Throwable t) {
+        } catch (Exception e) {
         }
     }
+
+    public void stopPlaying() {
+        isPlaying = false;
+    }
+
     public void release() {
         if (mRecorder != null) {
             mRecorder.stop();
