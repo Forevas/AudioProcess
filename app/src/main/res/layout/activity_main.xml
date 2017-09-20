@@ -10,13 +10,18 @@
         android:id="@+id/tv_record"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/bg_button"
         android:gravity="center"
-        android:text="开始录制" />
+        android:text="音频录制" />
+
     <TextView
-        android:id="@+id/tv_play"
+        android:id="@+id/tv_change"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/bg_button"
         android:gravity="center"
-        android:text="开始播放"/>
+        android:text="变声" />
 
 </LinearLayout>

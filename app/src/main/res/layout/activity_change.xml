@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_change_1"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/bg_button"
+        android:gravity="center"
+        android:text="普通" />
+
+    <TextView
+        android:id="@+id/tv_change_2"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/bg_button"
+        android:gravity="center"
+        android:text="萝莉" />
+
+    <TextView
+        android:id="@+id/tv_change_3"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/bg_button"
+        android:gravity="center"
+        android:text="大叔" />
+
+    <TextView
+        android:id="@+id/tv_change_4"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/bg_button"
+        android:gravity="center"
+        android:text="惊悚" />
+
+    <TextView
+        android:id="@+id/tv_change_5"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/bg_button"
+        android:gravity="center"
+        android:text="搞怪" />
+
+    <TextView
+        android:id="@+id/tv_change_6"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/bg_button"
+        android:gravity="center"
+        android:text="空灵" />
+</LinearLayout>
